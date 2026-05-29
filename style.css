@@ -1969,7 +1969,7 @@ body {
    ========================================================================== */
 
 .template-switcher-container {
-  position: absolute;
+  position: sticky;
   bottom: 0;
   left: 0;
   right: 0;

@@ -591,7 +591,7 @@ function createEntryDOM(type, data, index) {
         </div>
         <div class="form-group">
           <label>End Year</label>
-          <input type="number" class="edu-end" max="${currentYear}" value="${data.endYear || ''}" placeholder="e.g. 2024" oninput="updateEntryField('education', ${index}, 'endYear', this.value)" onchange="triggerAutoSave(false)">
+          <input type="number" class="edu-end" value="${data.endYear || ''}" placeholder="e.g. 2024" oninput="updateEntryField('education', ${index}, 'endYear', this.value)" onchange="triggerAutoSave(false)">
         </div>
         <div class="form-group col-span-2">
           <label>Grade / GPA / %</label>
@@ -692,8 +692,8 @@ window.toggleExperienceCurrent = function(index, checkbox) {
 
 // Update field mapping
 window.updateEntryField = function(type, index, field, value, silent = true) {
-  // Prevent year fields from exceeding current year
-  if ((field === "startYear" || field === "endYear" || field === "year") && value) {
+  // Prevent year fields from exceeding current year (excluding endYear)
+  if ((field === "startYear" || field === "year") && value) {
     const currentYear = new Date().getFullYear();
     const numVal = parseInt(value);
     if (!isNaN(numVal) && numVal > currentYear) {
