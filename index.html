@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>whereismyResume — Stop searching. Start building.</title>
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SortableJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  
+  <!-- html2pdf.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="nav-left">
+      <div class="logo-container">
+        <img src="logo.png" alt="whereismyResume Logo" class="app-logo">
+        <div class="brand-text-container">
+          <div class="brand-title">
+            <span class="brand-whereis">whereis</span><span class="brand-my">my</span><span class="brand-resume">Resume</span>
+          </div>
+          <span class="brand-tagline">"Stop searching. Start building."</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="nav-right">
+      <!-- Completion Progress Bar -->
+      <div class="progress-container">
+        <span class="progress-label" id="progressLabel">Profile 0%</span>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Settings Icon for Multi-AI Config -->
+      <button class="icon-btn settings-trigger" id="settingsBtn" title="AI Settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+
+      <!-- Light / Dark Mode Toggle -->
+      <div class="theme-toggle-switch" id="themeToggle" title="Toggle Theme">
+        <span class="toggle-icon sun-icon">☀️</span>
+        <span class="toggle-icon moon-icon">🌙</span>
+        <div class="toggle-thumb"></div>
+      </div>
+
+      <!-- Clear All Button -->
+      <button class="ghost-danger-btn" id="clearAllBtn" title="Clear all data">
+        <i class="fa-solid fa-trash"></i>
+        <span>Clear All</span>
+      </button>
+
+      <!-- Download PDF Button -->
+      <button class="download-btn pulsing" id="downloadBtn" title="Download PDF">
+        <i class="fa-solid fa-download"></i>
+        <span>Download PDF</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="app-container">
+    
+    <!-- LEFT PANEL: INPUT FORM -->
+    <section class="left-panel">
+      <div class="panel-header">
+        <h1 class="panel-title">Build Your Resume</h1>
+        <p class="panel-subtitle">Fill in your details and watch the magic happen ✨</p>
+      </div>
+
+      <form id="resumeForm" autocomplete="off" onsubmit="event.preventDefault();">
+        
+        <!-- SECTION 1: Personal Info -->
+        <div class="collapsible-card" id="section-personal">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-user icon-indigo"></i> Personal Info</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="photo-upload-container">
+              <label class="photo-dropzone" id="photoDropzone">
+                <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+                <div class="dropzone-content" id="dropzoneContent">
+                  <i class="fa-solid fa-camera camera-icon"></i>
+                  <span>Upload Photo</span>
+                </div>
+                <img id="photoPreview" alt="Profile Photo" class="photo-preview hidden">
+                <button class="remove-photo-btn" id="removePhotoBtn" title="Remove photo" type="button">&times;</button>
+              </label>
+            </div>
+
+            <!-- Photo Adjustment Controls -->
+            <div class="photo-controls hidden" id="photoControls">
+              <span class="photo-controls-title"><i class="fa-solid fa-sliders"></i> Adjust Photo Alignment</span>
+              <div class="control-row">
+                <label for="photoZoomRange"><i class="fa-solid fa-magnifying-glass-plus"></i> Scale / Zoom</label>
+                <input type="range" id="photoZoomRange" min="100" max="250" value="100" class="control-slider">
+              </div>
+              <div class="control-row">
+                <label for="photoXRange"><i class="fa-solid fa-arrows-left-right"></i> Horizontal Position</label>
+                <input type="range" id="photoXRange" min="-100" max="100" value="0" class="control-slider">
+              </div>
+              <div class="control-row">
+                <label for="photoYRange"><i class="fa-solid fa-arrows-up-down"></i> Vertical Position</label>
+                <input type="range" id="photoYRange" min="-100" max="100" value="0" class="control-slider">
+              </div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="form-group col-span-2">
+                <label for="fullName">Full Name <span class="required-star">*</span></label>
+                <input type="text" id="fullName" placeholder="e.g. Alex Johnson" required>
+                <span class="helper-text error-msg hidden">Full Name is required</span>
+              </div>
+              
+              <div class="form-group col-span-2">
+                <label for="jobTitle">Job Title</label>
+                <input type="text" id="jobTitle" placeholder="e.g. Senior Frontend Developer">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email <span class="required-star">*</span></label>
+                <input type="email" id="email" placeholder="alex@example.com" required>
+                <span class="helper-text error-msg hidden">Please enter a valid email</span>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone <span class="required-star">*</span></label>
+                <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+                <span class="helper-text error-msg hidden">Please enter a valid phone number</span>
+              </div>
+
+              <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" placeholder="City, Country">
+              </div>
+
+              <div class="form-group">
+                <label for="linkedin">LinkedIn URL</label>
+                <input type="url" id="linkedin" placeholder="linkedin.com/in/username">
+              </div>
+
+              <div class="form-group col-span-2">
+                <label for="portfolio">Portfolio/GitHub URL</label>
+                <input type="url" id="portfolio" placeholder="github.com/username">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Professional Summary -->
+        <div class="collapsible-card" id="section-summary">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-pen-nib icon-indigo"></i> Professional Summary</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <div class="textarea-wrapper">
+                <textarea id="summary" rows="4" maxlength="500" placeholder="Write a brief summary about yourself..."></textarea>
+                <div class="textarea-shimmer" id="aiShimmer"></div>
+              </div>
+              <div class="summary-footer">
+                <span class="char-counter" id="charCounter">0 / 500</span>
+                <button type="button" class="ai-generate-btn" id="aiGenerateBtn">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                  <span>✨ Generate with AI</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Skills -->
+        <div class="collapsible-card" id="section-skills">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-code icon-indigo"></i> Skills</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label>Add Skills (Max 20)</label>
+              <div class="tag-input-container">
+                <input type="text" id="skillInput" placeholder="Type a skill, press Enter">
+                <button type="button" class="tag-add-btn" id="addSkillBtn">+ Add</button>
+              </div>
+              <div class="tags-container" id="skillsContainer">
+                <!-- Skill tags will generate here dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Work Experience -->
+        <div class="collapsible-card" id="section-experience">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-briefcase icon-indigo"></i> Work Experience</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="list-container" id="experienceList">
+              <!-- Draggable Experience Cards go here -->
+            </div>
+            <button type="button" class="add-outline-btn" id="addExperienceBtn">
+              <i class="fa-solid fa-plus"></i> Add Experience
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Education -->
+        <div class="collapsible-card" id="section-education">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-graduation-cap icon-indigo"></i> Education</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="list-container" id="educationList">
+              <!-- Draggable Education Cards go here -->
+            </div>
+            <button type="button" class="add-outline-btn" id="addEducationBtn">
+              <i class="fa-solid fa-plus"></i> Add Education
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION 6: Projects -->
+        <div class="collapsible-card" id="section-projects">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-rocket icon-indigo"></i> Projects</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="list-container" id="projectsList">
+              <!-- Draggable Projects Cards go here -->
+            </div>
+            <button type="button" class="add-outline-btn" id="addProjectBtn">
+              <i class="fa-solid fa-plus"></i> Add Project
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION 7: Certifications -->
+        <div class="collapsible-card" id="section-certifications">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-certificate icon-indigo"></i> Certifications</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="list-container" id="certificationsList">
+              <!-- Certification cards go here -->
+            </div>
+            <button type="button" class="add-outline-btn" id="addCertificationBtn">
+              <i class="fa-solid fa-plus"></i> Add Certification
+            </button>
+          </div>
+        </div>
+
+        <!-- SECTION 8: Languages -->
+        <div class="collapsible-card" id="section-languages">
+          <div class="card-header">
+            <span class="header-title"><i class="fa-solid fa-language icon-indigo"></i> Languages</span>
+            <i class="fa-solid fa-chevron-down arrow-toggle"></i>
+          </div>
+          <div class="card-body">
+            <div class="list-container" id="languagesList">
+              <!-- Language cards go here -->
+            </div>
+            <button type="button" class="add-outline-btn" id="addLanguageBtn">
+              <i class="fa-solid fa-plus"></i> Add Language
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- RIGHT PANEL: LIVE PREVIEW & TEMPLATE SWITCHER -->
+    <section class="right-panel">
+      <div class="panel-header flex-header">
+        <h2 class="panel-title text-dark-preview">Live Preview</h2>
+      </div>
+
+      <!-- A4 Resume Container -->
+      <div class="resume-wrapper">
+        <div id="resumePreview" class="resume-preview template-1">
+          <!-- Dynamic rendering from js goes here -->
+        </div>
+      </div>
+
+      <!-- STICKY BOTTOM TEMPLATE SWITCHER -->
+      <div class="template-switcher-container">
+        <span class="switcher-label">Choose Your Template</span>
+        <div class="templates-row" id="templatesRow">
+          <!-- 10 templates dynamically rendered here -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- TOAST SYSTEM CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Multi-AI Assistant Settings</h3>
+        <button class="close-modal-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-description">Choose your preferred AI Model Provider and enter your private API key to enable instant, high-converting professional summary generation.</p>
+        
+        <div class="form-group">
+          <label for="aiProviderSelect">Select AI Provider</label>
+          <select id="aiProviderSelect" class="form-select">
+            <option value="anthropic">Anthropic Claude (claude-3-5-sonnet)</option>
+            <option value="openai">OpenAI GPT-4o (gpt-4o-mini)</option>
+            <option value="gemini">Google Gemini (gemini-1.5-flash)</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="aiApiKeyInput">Enter API Key</label>
+          <div class="key-input-wrapper">
+            <input type="password" id="aiApiKeyInput" placeholder="Paste your API key here...">
+            <button type="button" class="show-key-btn" id="toggleKeyVisibility">
+              <i class="fa-solid fa-eye" id="keyEyeIcon"></i>
+            </button>
+          </div>
+          <span class="helper-text italic-muted">Your API key is saved safely in your browser's localStorage and never sent anywhere else.</span>
+        </div>
+        
+        <div class="cors-notice">
+          <p><strong>💡 Running into CORS issues?</strong></p>
+          <p>Direct API requests from browsers to AI endpoints are blocked by browser CORS restrictions. To resolve this for local testing:</p>
+          <ul>
+            <li>Use a browser extension to bypass CORS (e.g. <em>CORS Unblock</em> or similar).</li>
+            <li>Alternatively, run a local cors proxy server and route calls there.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="outline-btn" id="cancelSettingsBtn">Cancel</button>
+        <button class="primary-btn" id="saveSettingsBtn">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
